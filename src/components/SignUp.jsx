@@ -92,7 +92,7 @@ const SignUp = () => {
         <p className="mt-10 text-center text-sm/6 text-gray-500">
           Já possui cadastro?{" "}
           <Link
-            to="/signup"
+            to="/signin"
             className="font-semibold text-teal-300 hover:text-teal-600"
           >
             Clique aqui para entrar!

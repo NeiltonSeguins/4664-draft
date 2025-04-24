@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 const navigation = [
   { name: "Home", href: "#" },
@@ -12,6 +13,20 @@ const navigation = [
 
 const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async (e) => {
+    e.preventDefault();
+
+    try {
+      await signOut();
+      navigate("/");
+    } catch (err) {
+      console.error("An unexpected error occurred." + err);
+    }
+  };
 
   return (
     <section>
@@ -50,10 +65,10 @@ const Home = () => {
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             <Link
               to="/signin"
-              href="#"
+              onClick={handleSignOut}
               className="text-sm/6 font-semibold text-gray-50"
             >
-              Entrar <span aria-hidden="true">&rarr;</span>
+              Sair <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
         </nav>
@@ -92,12 +107,13 @@ const Home = () => {
                   ))}
                 </div>
                 <div className="py-6">
-                  <a
-                    href="#"
+                  <Link
+                    to="/signin"
+                    onClick={handleSignOut}
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-50 hover:bg-teal-600"
                   >
-                    Entrar
-                  </a>
+                    Sair
+                  </Link>
                 </div>
               </div>
             </div>
