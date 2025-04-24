@@ -1,7 +1,34 @@
-import React from "react";
-import { Link } from "react-router";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const { signInUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    const { session, error } = await signInUser(email, password);
+
+    if (error) {
+      setError(error);
+
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+    } else {
+      navigate("/home");
+    }
+
+    if (session) {
+      setError("");
+    }
+  };
+
   return (
     <section className="flex min-h-full w-[390px] flex-col justify-center px-6 py-12  lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -12,7 +39,7 @@ const SignIn = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6">
+        <form onSubmit={handleSignIn} className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -22,6 +49,7 @@ const SignIn = () => {
             </label>
             <div className="mt-2">
               <input
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 name="email"
                 id="email"
@@ -51,6 +79,7 @@ const SignIn = () => {
             </div>
             <div className="mt-2">
               <input
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 name="password"
                 id="password"
@@ -69,6 +98,7 @@ const SignIn = () => {
               Entrar
             </button>
           </div>
+          {error && <p className="text-red-600 text-center pt-4">{error}</p>}
         </form>
 
         <p className="mt-10 text-center text-sm/6 text-gray-500">
