@@ -1,7 +1,30 @@
-import React from "react";
-import { Link } from "react-router";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const { signUpNewUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    try {
+      const result = await signUpNewUser(email, password);
+      if (result.success) {
+        navigate("/signin");
+      } else {
+        setError(result.error.message);
+      }
+    } catch (err) {
+      setError("O seguinte erro ocorreu: " + err);
+    }
+  };
+
   return (
     <section className="flex min-h-full w-[390px] flex-col justify-center px-6 py-12  lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -12,7 +35,7 @@ const SignUp = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+        <form onSubmit={handleSignUp} className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -22,6 +45,7 @@ const SignUp = () => {
             </label>
             <div className="mt-2">
               <input
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 name="email"
                 id="email"
@@ -43,6 +67,7 @@ const SignUp = () => {
             </div>
             <div className="mt-2">
               <input
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 name="password"
                 id="password"
@@ -61,6 +86,7 @@ const SignUp = () => {
               Cadastrar
             </button>
           </div>
+          {error && <p className="text-red-600 text-center pt-4">{error}</p>}
         </form>
 
         <p className="mt-10 text-center text-sm/6 text-gray-500">
